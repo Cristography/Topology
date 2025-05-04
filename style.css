@@ -1,0 +1,368 @@
+/* General Styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between sections */
+}
+
+h1, h2 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 15px;
+}
+h1 {
+    margin-bottom: 25px;
+    font-size: 2em;
+}
+h2 {
+    font-size: 1.5em;
+}
+
+/* Controls Section */
+#controls {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid #dcdcdc;
+}
+
+.control-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between label and input/buttons */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.control-group label {
+    font-weight: bold;
+    margin-right: 5px;
+    flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+#nodeCount {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 60px;
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #3498db;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    margin: 5px; /* Spacing between buttons */
+}
+
+button:hover {
+    background-color: #2980b9;
+    opacity: 0.9;
+}
+button:active {
+    transform: scale(0.98);
+}
+
+#resetButton {
+    background-color: #e74c3c;
+}
+#resetButton:hover {
+    background-color: #c0392b;
+}
+
+/* Quiz Button Specific Style */
+#quizButton {
+    background-color: #1abc9c; /* Teal color for quiz button */
+    margin-left: auto; /* Pushes quiz button to the right */
+}
+#quizButton:hover {
+    background-color: #16a085;
+}
+
+/* Visualization Section */
+#visualization {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center canvas and legend */
+    gap: 15px;
+}
+
+#networkCanvas {
+    border: 1px solid #bdc3c7;
+    background-color: #ffffff;
+    display: block; /* Remove extra space below canvas */
+    max-width: 100%; /* Ensure canvas scales down */
+    height: auto; /* Maintain aspect ratio */
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+}
+
+/* Legend */
+#legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 10px;
+    font-size: 0.9em;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    border: 1px solid #7f8c8d;
+    vertical-align: middle;
+}
+
+.legend-color.node-ok { background-color: #2ecc71; }
+.legend-color.node-failed { background-color: #e74c3c; }
+.legend-color.connection-ok { background-color: #3498db; height: 3px; width: 20px; border-radius: 0; border: none;}
+.legend-color.connection-failed { background-color: #c0392b; height: 3px; width: 20px; border-radius: 0; border: none;} /* Changed color for failed connection */
+
+
+/* Description Section */
+#description {
+    background-color: #fdfefe;
+    padding: 15px 20px;
+    border-radius: 6px;
+    border: 1px solid #e0e6e8;
+    min-height: 80px; /* Ensure some space even if empty */
+}
+#description p {
+    margin: 0;
+    font-style: italic;
+    color: #555;
+}
+#description h3 {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color:#2c3e50;
+    font-style: normal;
+}
+#description strong {
+    font-style: normal;
+}
+
+/* Quiz Section Styling */
+#quizContainer {
+    background-color: #f9f9f9; /* Light background for quiz */
+    padding: 20px 25px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    margin-top: 20px; /* Space above the quiz */
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+#quizContainer h2 {
+    text-align: center;
+    color: #16a085; /* Match button color */
+    margin-bottom: 20px;
+}
+
+.quiz-question {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #ccc;
+}
+.quiz-question:last-of-type {
+    border-bottom: none; /* Remove border from last question */
+    margin-bottom: 25px;
+}
+
+
+.quiz-question p {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #34495e;
+    font-style: normal; /* Override italic from description */
+}
+
+.quiz-options label {
+    display: block; /* Each option on a new line */
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    font-style: normal; /* Override italic */
+}
+.quiz-options label:hover {
+    background-color: #ecf0f1;
+}
+
+
+.quiz-options input[type="radio"] {
+    margin-right: 8px;
+    vertical-align: middle; /* Align radio button nicely */
+}
+
+#submitQuizButton, #closeQuizButton {
+    display: block; /* Make buttons block level */
+    width: auto; /* Auto width based on content */
+    min-width: 120px;
+    margin: 15px auto 10px auto; /* Center buttons */
+    padding: 10px 20px;
+}
+#submitQuizButton {
+     background-color: #2980b9; /* Blue for submit */
+}
+#submitQuizButton:hover {
+     background-color: #2471a3;
+}
+#closeQuizButton {
+     background-color: #7f8c8d; /* Grey for close */
+}
+#closeQuizButton:hover {
+    background-color: #626f70;
+}
+
+.quiz-results {
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+}
+
+/* Feedback Styles for Quiz */
+.quiz-results.correct {
+    background-color: #d4efdf; /* Light green */
+    color: #145a32; /* Dark green */
+    border: 1px solid #a9dfbf;
+}
+.quiz-results.incorrect {
+     background-color: #f5b7b1; /* Light red */
+    color: #78281f; /* Dark red */
+    border: 1px solid #ec7063;
+}
+
+/* Class to highlight correct/incorrect answers after submission */
+.correct-answer { /* Apply to the label */
+    background-color: #c8e6c9 !important; /* Slightly darker green highlight */
+    border: 1px solid #81c784;
+    font-weight: bold;
+}
+
+.incorrect-choice { /* Apply to the label */
+     background-color: #ffcdd2 !important; /* Slightly darker red highlight */
+     border: 1px solid #e57373;
+     text-decoration: line-through; /* Indicate wrong choice */
+     color: #555;
+}
+.reveal-correct { /* Apply to the label of the actual correct answer when user was wrong */
+     border: 2px solid #27ae60 !important;
+     font-weight: bold;
+     background-color: #e8f5e9 !important; /* Light green hint */
+}
+
+
+/* Utility class to hide elements */
+.hidden {
+    display: none;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        padding: 15px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    h2 {
+        font-size: 1.3em;
+    }
+    .control-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .topology-buttons {
+        flex-direction: row; /* Keep buttons mostly horizontal */
+        flex-wrap: wrap; /* Allow wrapping */
+        justify-content: flex-start;
+    }
+    button {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+    #networkCanvas {
+        /* Adjust canvas size if needed, but width/height attributes dominate */
+         width: 100%; /* Let container control width */
+         height: auto; /* Maintain aspect ratio based on HTML attributes */
+    }
+    /* Adjust quiz padding if needed */
+    #quizContainer {
+        padding: 15px;
+    }
+     #quizButton {
+        margin-left: 10px; /* Adjust spacing */
+        margin-top: 5px; /* Add space when wrapped */
+    }
+     #resetButton {
+         margin-top: 5px;
+     }
+     .control-group:last-of-type { /* Target the group with reset/quiz buttons */
+        flex-direction: row; /* Keep reset/quiz buttons side-by-side */
+        align-items: center; /* Align them vertically */
+     }
+}
+
+@media (max-width: 480px) {
+     h1 {
+        font-size: 1.5em;
+    }
+     h2 {
+        font-size: 1.1em;
+    }
+    .topology-buttons button {
+        flex-basis: calc(50% - 10px); /* Two buttons per row approx */
+        text-align: center;
+    }
+     #legend {
+        font-size: 0.8em;
+        gap: 10px;
+    }
+    #quizButton {
+        width: calc(50% - 10px); /* Make buttons take up more space */
+        margin-left: 0; /* Reset margin */
+        text-align: center;
+    }
+     #resetButton {
+         width: calc(50% - 10px);
+         text-align: center;
+     }
+      .control-group:last-of-type {
+          justify-content: space-between; /* Space out reset/quiz buttons */
+      }
+}
