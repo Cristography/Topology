@@ -1,117 +1,168 @@
 /* General Styling */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
+    font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
+    line-height: 1.7;
     margin: 0;
-    padding: 20px;
+    padding: 10px; /* Reduced padding for small screens */
     background-color: #f4f7f6;
     color: #333;
+    direction: rtl;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     background-color: #fff;
-    padding: 25px;
+    padding: 20px; /* Reduced padding */
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Space between sections */
+    gap: 15px; /* Reduced gap */
 }
 
-h1, h2 {
+h1, h2, h3 {
     color: #2c3e50;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced margin */
 }
 h1 {
-    margin-bottom: 25px;
-    font-size: 2em;
+    margin-bottom: 20px;
+    font-size: 1.8em; /* Slightly smaller for mobile */
 }
 h2 {
-    font-size: 1.5em;
+    font-size: 1.4em;
 }
+h3 {
+    font-size: 1.1em;
+    margin-top: 5px;
+    margin-bottom: 8px;
+    color:#2c3e50;
+    font-style: normal;
+}
+
 
 /* Controls Section */
 #controls {
     background-color: #ecf0f1;
-    padding: 20px;
+    padding: 15px; /* Reduced padding */
     border-radius: 6px;
     border: 1px solid #dcdcdc;
 }
 
 .control-group {
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced margin */
     display: flex;
-    align-items: center;
-    gap: 10px; /* Space between label and input/buttons */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    align-items: center; /* Changed to center for better vertical alignment on wrap */
+    gap: 8px; /* Reduced gap */
+    flex-wrap: wrap;
 }
 
 .control-group label {
     font-weight: bold;
-    margin-right: 5px;
-    flex-shrink: 0; /* Prevent label from shrinking */
+    margin-left: 5px;
+    margin-right: 0;
+    flex-shrink: 0;
+    font-size: 0.95em; /* Slightly smaller label text */
 }
 
 #nodeCount {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 60px;
+    width: 50px; /* Slightly smaller width */
+    text-align: right;
+    font-size: 0.95em;
 }
 
+/* --- Button Styles --- */
 button {
-    padding: 10px 15px;
-    font-size: 1em;
+    padding: 10px 12px; /* Adjusted padding for better touch targets */
+    font-size: 0.95em;  /* Slightly smaller font for buttons */
+    font-family: 'Tahoma', sans-serif;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #3498db;
     color: white;
-    transition: background-color 0.3s ease, transform 0.1s ease;
-    margin: 5px; /* Spacing between buttons */
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease; /* Added box-shadow transition */
+    margin: 4px; /* Reduced margin */
+    text-align: center;
+    min-width: 80px; /* Minimum width for better tapability */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
 }
 
 button:hover {
-    background-color: #2980b9;
-    opacity: 0.9;
+    opacity: 0.85; /* Slightly more pronounced hover */
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 button:active {
-    transform: scale(0.98);
+    transform: scale(0.97); /* Slightly less aggressive active scale */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
+/* Specific Button Colors */
+.topology-buttons button {
+    background-color: #3498db; /* Standard blue for topology buttons */
+}
+.topology-buttons button:hover {
+    background-color: #2980b9;
+}
+
+
 #resetButton {
-    background-color: #e74c3c;
+    background-color: #e74c3c; /* Red */
 }
 #resetButton:hover {
     background-color: #c0392b;
 }
 
-/* Quiz Button Specific Style */
 #quizButton {
-    background-color: #1abc9c; /* Teal color for quiz button */
-    margin-left: auto; /* Pushes quiz button to the right */
+    background-color: #1abc9c; /* Teal */
 }
 #quizButton:hover {
     background-color: #16a085;
 }
 
+/* Button Grouping for Controls */
+.topology-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center topology buttons */
+    gap: 6px; /* Gap between topology buttons */
+}
+.topology-buttons button {
+    flex-grow: 1; /* Allow buttons to grow and fill space */
+    flex-basis: auto; /* Let content decide initial size */
+}
+
+
+.action-buttons { /* New class for Reset and Quiz buttons container */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around; /* Space out action buttons */
+    gap: 8px;
+    margin-top: 10px; /* Add some space above action buttons */
+}
+.action-buttons button {
+    flex-grow: 1; /* Allow action buttons to grow */
+    min-width: 120px; /* Ensure action buttons are wide enough */
+}
+
+
 /* Visualization Section */
 #visualization {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center canvas and legend */
-    gap: 15px;
+    align-items: center;
+    gap: 10px; /* Reduced gap */
 }
 
 #networkCanvas {
     border: 1px solid #bdc3c7;
     background-color: #ffffff;
-    display: block; /* Remove extra space below canvas */
-    max-width: 100%; /* Ensure canvas scales down */
-    height: auto; /* Maintain aspect ratio */
+    display: block;
+    max-width: 100%;
+    height: auto;
     box-shadow: 0 1px 5px rgba(0,0,0,0.05);
 }
 
@@ -120,21 +171,21 @@ button:active {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
-    padding: 10px;
-    font-size: 0.9em;
+    gap: 10px; /* Reduced gap */
+    padding: 8px; /* Reduced padding */
+    font-size: 0.85em; /* Slightly smaller legend text */
 }
 
 .legend-item {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
 .legend-color {
     display: inline-block;
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     border-radius: 3px;
     border: 1px solid #7f8c8d;
     vertical-align: middle;
@@ -142,227 +193,213 @@ button:active {
 
 .legend-color.node-ok { background-color: #2ecc71; }
 .legend-color.node-failed { background-color: #e74c3c; }
-.legend-color.connection-ok { background-color: #3498db; height: 3px; width: 20px; border-radius: 0; border: none;}
-.legend-color.connection-failed { background-color: #c0392b; height: 3px; width: 20px; border-radius: 0; border: none;} /* Changed color for failed connection */
+.legend-color.node-central { background-color: #f1c40f; }
+.legend-color.connection-ok { background-color: #3498db; height: 3px; width: 18px; border-radius: 0; border: none;}
+.legend-color.connection-failed { background-color: #c0392b; height: 3px; width: 18px; border-radius: 0; border: none;}
 
 
 /* Description Section */
 #description {
     background-color: #fdfefe;
-    padding: 15px 20px;
+    padding: 12px 15px; /* Reduced padding */
     border-radius: 6px;
     border: 1px solid #e0e6e8;
-    min-height: 80px; /* Ensure some space even if empty */
+    min-height: 70px;
 }
 #description p {
-    margin: 0;
-    font-style: italic;
-    color: #555;
-}
-#description h3 {
-    margin-top: 5px;
-    margin-bottom: 10px;
-    color:#2c3e50;
-    font-style: normal;
+    margin: 4px 0;
+    color: #444;
+    font-size: 0.95em;
 }
 #description strong {
-    font-style: normal;
+    font-weight: bold;
+    color: #2c3e50;
 }
+
 
 /* Quiz Section Styling */
 #quizContainer {
-    background-color: #f9f9f9; /* Light background for quiz */
-    padding: 20px 25px;
+    background-color: #f9f9f9;
+    padding: 15px 20px; /* Reduced padding */
     border-radius: 6px;
     border: 1px solid #e0e0e0;
-    margin-top: 20px; /* Space above the quiz */
+    margin-top: 15px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
 #quizContainer h2 {
     text-align: center;
-    color: #16a085; /* Match button color */
-    margin-bottom: 20px;
+    color: #16a085;
+    margin-bottom: 15px;
 }
 
 .quiz-question {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
     border-bottom: 1px dashed #ccc;
 }
 .quiz-question:last-of-type {
-    border-bottom: none; /* Remove border from last question */
-    margin-bottom: 25px;
+    border-bottom: none;
+    margin-bottom: 20px;
 }
-
 
 .quiz-question p {
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: #34495e;
-    font-style: normal; /* Override italic from description */
+    font-size: 1em;
 }
 
 .quiz-options label {
-    display: block; /* Each option on a new line */
-    margin-bottom: 8px;
+    display: block;
+    margin-bottom: 6px;
     cursor: pointer;
-    padding: 5px 8px;
+    padding: 10px 12px; /* Increased padding for better touch target */
     border-radius: 4px;
     transition: background-color 0.2s ease;
-    font-style: normal; /* Override italic */
+    border: 1px solid #eee; /* Subtle border for definition */
+    font-size: 0.95em;
 }
 .quiz-options label:hover {
-    background-color: #ecf0f1;
+    background-color: #e9f5f8; /* Lighter hover for options */
 }
 
-
 .quiz-options input[type="radio"] {
-    margin-right: 8px;
-    vertical-align: middle; /* Align radio button nicely */
+    margin-left: 8px;
+    margin-right: 0;
+    vertical-align: middle;
+    transform: scale(1.1); /* Slightly larger radio buttons */
 }
 
 #submitQuizButton, #closeQuizButton {
-    display: block; /* Make buttons block level */
-    width: auto; /* Auto width based on content */
-    min-width: 120px;
-    margin: 15px auto 10px auto; /* Center buttons */
-    padding: 10px 20px;
+    display: block;
+    width: 90%; /* Make quiz action buttons wider on mobile */
+    max-width: 250px; /* Max width for larger screens */
+    min-width: 0; /* Reset min-width from general button style */
+    margin: 12px auto 8px auto;
+    padding: 12px 15px; /* Larger padding for quiz actions */
+    font-size: 1em; /* Ensure quiz action buttons are readable */
 }
 #submitQuizButton {
-     background-color: #2980b9; /* Blue for submit */
+     background-color: #2980b9;
 }
 #submitQuizButton:hover {
      background-color: #2471a3;
 }
 #closeQuizButton {
-     background-color: #7f8c8d; /* Grey for close */
+     background-color: #7f8c8d;
 }
 #closeQuizButton:hover {
     background-color: #626f70;
 }
 
 .quiz-results {
-    margin-top: 20px;
-    padding: 15px;
-    font-size: 1.1em;
+    margin-top: 15px;
+    padding: 12px;
+    font-size: 1.05em;
     font-weight: bold;
     text-align: center;
     border-radius: 5px;
 }
 
-/* Feedback Styles for Quiz */
 .quiz-results.correct {
-    background-color: #d4efdf; /* Light green */
-    color: #145a32; /* Dark green */
+    background-color: #d4efdf;
+    color: #145a32;
     border: 1px solid #a9dfbf;
 }
 .quiz-results.incorrect {
-     background-color: #f5b7b1; /* Light red */
-    color: #78281f; /* Dark red */
-    border: 1px solid #ec7063;
+     background-color: #fdedec;
+    color: #78281f;
+    border: 1px solid #f5b0ab;
+}
+.quiz-results.so-so {
+    background-color: #fff9c4;
+    color: #f57f17;
+    border: 1px solid #fff176;
 }
 
-/* Class to highlight correct/incorrect answers after submission */
-.correct-answer { /* Apply to the label */
-    background-color: #c8e6c9 !important; /* Slightly darker green highlight */
-    border: 1px solid #81c784;
+
+.correct-answer {
+    background-color: #c8e6c9 !important;
+    border-color: #81c784 !important;
     font-weight: bold;
 }
 
-.incorrect-choice { /* Apply to the label */
-     background-color: #ffcdd2 !important; /* Slightly darker red highlight */
-     border: 1px solid #e57373;
-     text-decoration: line-through; /* Indicate wrong choice */
+.incorrect-choice {
+     background-color: #ffcdd2 !important;
+     border-color: #e57373 !important;
      color: #555;
 }
-.reveal-correct { /* Apply to the label of the actual correct answer when user was wrong */
+.reveal-correct {
      border: 2px solid #27ae60 !important;
      font-weight: bold;
-     background-color: #e8f5e9 !important; /* Light green hint */
+     background-color: #e8f5e9 !important;
 }
 
-
-/* Utility class to hide elements */
 .hidden {
     display: none;
 }
 
-
-/* Responsive Design */
+/* Responsive Design Adjustments for Buttons */
 @media (max-width: 768px) {
-    body {
-        padding: 10px;
+    /* .control-group label, #nodeCount, button {
+        font-size: 0.9em; Reduce font size further if needed
+    } */
+    .topology-buttons button {
+        padding: 8px 10px; /* Slightly smaller padding on medium screens */
     }
-    .container {
-        padding: 15px;
+    .action-buttons button {
+         padding: 10px 12px;
     }
-    h1 {
-        font-size: 1.8em;
-    }
-    h2 {
-        font-size: 1.3em;
-    }
-    .control-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .topology-buttons {
-        flex-direction: row; /* Keep buttons mostly horizontal */
-        flex-wrap: wrap; /* Allow wrapping */
-        justify-content: flex-start;
-    }
-    button {
-        padding: 8px 12px;
-        font-size: 0.9em;
-    }
-    #networkCanvas {
-        /* Adjust canvas size if needed, but width/height attributes dominate */
-         width: 100%; /* Let container control width */
-         height: auto; /* Maintain aspect ratio based on HTML attributes */
-    }
-    /* Adjust quiz padding if needed */
-    #quizContainer {
-        padding: 15px;
-    }
-     #quizButton {
-        margin-left: 10px; /* Adjust spacing */
-        margin-top: 5px; /* Add space when wrapped */
-    }
-     #resetButton {
-         margin-top: 5px;
-     }
-     .control-group:last-of-type { /* Target the group with reset/quiz buttons */
-        flex-direction: row; /* Keep reset/quiz buttons side-by-side */
-        align-items: center; /* Align them vertically */
-     }
 }
 
 @media (max-width: 480px) {
-     h1 {
-        font-size: 1.5em;
+    body {
+        padding: 5px; /* Minimal padding on very small screens */
     }
-     h2 {
-        font-size: 1.1em;
+    .container {
+        padding: 10px;
+    }
+    h1 { font-size: 1.6em; }
+    h2 { font-size: 1.2em; }
+    h3 { font-size: 1em; }
+
+    .control-group {
+        flex-direction: column; /* Stack label and input */
+        align-items: stretch; /* Make children full width */
+    }
+    .control-group label {
+        margin-bottom: 4px; /* Space between stacked label and input */
+    }
+    #nodeCount {
+        width: 100%; /* Full width for input */
+    }
+
+    .topology-buttons {
+        justify-content: stretch; /* Stretch buttons in the flex container */
     }
     .topology-buttons button {
-        flex-basis: calc(50% - 10px); /* Two buttons per row approx */
-        text-align: center;
+        flex-basis: calc(50% - 8px); /* Two buttons per row, accounting for gap */
+        padding: 10px 5px; /* Adjust padding for smaller buttons */
+        font-size: 0.9em;
+        margin: 4px; /* Ensure consistent margin */
     }
-     #legend {
-        font-size: 0.8em;
-        gap: 10px;
+
+    .action-buttons {
+        flex-direction: column; /* Stack Reset and Quiz buttons */
+        align-items: stretch; /* Make them full width */
     }
-    #quizButton {
-        width: calc(50% - 10px); /* Make buttons take up more space */
-        margin-left: 0; /* Reset margin */
-        text-align: center;
+    .action-buttons button {
+        width: 100%; /* Full width for action buttons */
+        margin: 5px 0; /* Vertical margin */
     }
-     #resetButton {
-         width: calc(50% - 10px);
-         text-align: center;
-     }
-      .control-group:last-of-type {
-          justify-content: space-between; /* Space out reset/quiz buttons */
-      }
+
+    #submitQuizButton, #closeQuizButton {
+        width: 100%; /* Full width */
+        font-size: 0.95em;
+    }
+    .quiz-options label {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
 }

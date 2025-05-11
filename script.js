@@ -30,16 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Constants ---
     const NODE_RADIUS = 15;
-    const NODE_COLOR_OK = '#2ecc71';
-    const NODE_COLOR_FAILED = '#e74c3c';
-    const NODE_COLOR_CENTRAL = '#f1c40f'; // Star centers, Tree root
-    const CONNECTION_COLOR_OK = '#3498db';
-    const CONNECTION_COLOR_FAILED = '#c0392b';
+    const NODE_COLOR_OK = '#2ecc71'; // أخضر
+    const NODE_COLOR_FAILED = '#e74c3c'; // أحمر
+    const NODE_COLOR_CENTRAL = '#f1c40f'; // أصفر (للمراكز والجذور)
+    const CONNECTION_COLOR_OK = '#3498db'; // أزرق
+    const CONNECTION_COLOR_FAILED = '#c0392b'; // أحمر داكن
     const CONNECTION_WIDTH_OK = 2;
     const CONNECTION_WIDTH_FAILED = 2;
 
-    // --- Correct Quiz Answers ---
-    const correctAnswers = { q1: 'b', q2: 'c', q3: 'b', q4: 'b', q5: 'c', q6: 'b', q7: 'a', q8: 'c' };
+    // --- Correct Quiz Answers (in LTR for keys) ---
+    const correctAnswers = { q1: 'b', q2: 'c', q3: 'b', q4: 'b', q5: 'c', q6: 'b', q7: 'a', q8: 'c', q9: 'b' };
     const totalQuestions = Object.keys(correctAnswers).length;
 
     // --- Drawing Functions ---
@@ -84,17 +84,17 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < count; i++) {
             nodes.push({ id: i, x: 0, y: 0, radius: NODE_RADIUS, isFailed: failedNodes.has(i), isCentral: false });
         }
-        nodes.forEach(node => node.isFailed = failedNodes.has(node.id)); // Ensure consistency
+        nodes.forEach(node => node.isFailed = failedNodes.has(node.id));
     }
 
     function addConnection(node1, node2) {
         const existing = connections.find(conn => (conn.node1 === node1 && conn.node2 === node2) || (conn.node1 === node2 && conn.node2 === node1));
-        if (existing || !node1 || !node2) return; // Avoid duplicates and ensure nodes exist
+        if (existing || !node1 || !node2) return;
         connections.push({ node1, node2, isBroken: node1.isFailed || node2.isFailed });
     }
 
     function generateBus() {
-        selectedTopology = 'Bus'; generateNodes(nodeCount); connections = [];
+        selectedTopology = 'التوبولوجيا الخطية (Bus)'; generateNodes(nodeCount); connections = [];
         const spacing = canvas.width / (nodeCount + 1); const yPos = canvas.height / 2;
         nodes.forEach((node, i) => { node.x = spacing * (i + 1); node.y = yPos; });
         for (let i = 0; i < nodeCount - 1; i++) addConnection(nodes[i], nodes[i + 1]);
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateStar() {
-        selectedTopology = 'Star'; generateNodes(nodeCount); connections = [];
+        selectedTopology = 'التوبولوجيا النجمية (Star)'; generateNodes(nodeCount); connections = [];
         const centerX = canvas.width / 2; const centerY = canvas.height / 2;
         const radius = Math.min(canvas.width, canvas.height) / 3;
         if (nodeCount > 0) {
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateRing() {
-        selectedTopology = 'Ring'; generateNodes(nodeCount); connections = [];
+        selectedTopology = 'التوبولوجيا الدائرية (Ring)'; generateNodes(nodeCount); connections = [];
         const centerX = canvas.width / 2; const centerY = canvas.height / 2;
         const radius = Math.min(canvas.width, canvas.height) / 3;
         for (let i = 0; i < nodeCount; i++) {
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateMesh() {
-        selectedTopology = 'Mesh (Full)'; generateNodes(nodeCount); connections = [];
+        selectedTopology = 'التوبولوجيا الشبكية (Mesh - Full)'; generateNodes(nodeCount); connections = [];
         const centerX = canvas.width / 2; const centerY = canvas.height / 2;
         const radius = Math.min(canvas.width, canvas.height) / 3;
         for (let i = 0; i < nodeCount; i++) {
@@ -140,195 +140,111 @@ document.addEventListener('DOMContentLoaded', () => {
         updateConnectionStatus(); updateDescriptionContent(); drawNetwork();
     }
 
-    // --- Revised generateTree using BFS ---
     function generateTree() {
-        selectedTopology = 'Tree';
+        selectedTopology = 'التوبولوجيا الشجرية (Tree)';
         generateNodes(nodeCount);
         connections = [];
-        if (nodeCount === 0) { drawNetwork(); return; }; // Handle empty case
+        if (nodeCount === 0) { drawNetwork(); return; };
 
-        // Estimate levels needed and vertical spacing
-        const levels = Math.max(1, Math.ceil(Math.log2(nodeCount + 1))); // +1 for better level calc
-        const levelHeight = canvas.height / (levels + 1); // +1 to add space below last level
+        const levels = Math.max(1, Math.ceil(Math.log2(nodeCount + 1)));
+        const levelHeight = canvas.height / (levels + 1);
         let nodeIndex = 0;
-        const queue = []; // Queue for BFS: { node, level }
+        const queue = [];
 
-        // Setup Root Node
         if (nodeIndex < nodeCount) {
             const root = nodes[nodeIndex++];
             root.x = canvas.width / 2;
-            root.y = levelHeight; // Place first level
-            root.isCentral = true; // Mark root as central
+            root.y = levelHeight;
+            root.isCentral = true;
             queue.push({ node: root, level: 0 });
         }
 
-        // BFS to place nodes level by level
         while (queue.length > 0 && nodeIndex < nodeCount) {
             const { node: parentNode, level } = queue.shift();
-
-            // Calculate how many children this parent can have (aim for binary)
-            // Limited by remaining nodes and max 2 children per parent
             const childrenToAssign = Math.min(2, nodeCount - nodeIndex);
+            if (childrenToAssign === 0) continue;
 
-            if (childrenToAssign === 0) continue; // No more nodes left to assign
-
-            // Calculate positioning for children relative to parent
-            const childrenY = levelHeight * (level + 2); // Y position for the next level
-            // Spread children horizontally based on the level depth
-            // Wider spread for levels closer to the root
-            const horizontalSpreadFactor = Math.pow(0.6, level); // Decrease spread lower down
+            const childrenY = levelHeight * (level + 2);
+            const horizontalSpreadFactor = Math.pow(0.6, level);
             const horizontalSpread = (canvas.width / 4) * horizontalSpreadFactor;
 
             for (let i = 0; i < childrenToAssign; i++) {
-                if (nodeIndex >= nodeCount) break; // Double check we haven't run out of nodes
-
+                if (nodeIndex >= nodeCount) break;
                 const childNode = nodes[nodeIndex++];
-                // Position left (i=0) or right (i=1) child
-                // If only one child, center it horizontally relative to parent slightly
                 let childXOffset = 0;
                  if (childrenToAssign === 1) {
-                    childXOffset = (Math.random() - 0.5) * 20; // Small random offset if single child
+                    childXOffset = (Math.random() - 0.5) * 20;
                  } else {
                      childXOffset = (i === 0 ? -horizontalSpread : horizontalSpread);
                  }
-
                 childNode.x = parentNode.x + childXOffset;
-                // Clamp X within canvas bounds to prevent nodes going off-screen
                 childNode.x = Math.max(NODE_RADIUS + 5, Math.min(canvas.width - NODE_RADIUS - 5, childNode.x));
                 childNode.y = childrenY;
-
                 addConnection(parentNode, childNode);
-                queue.push({ node: childNode, level: level + 1 }); // Add child to queue for processing its children
+                queue.push({ node: childNode, level: level + 1 });
             }
         }
-
-        // Simple collision avoidance pass (optional refinement)
-        // Iterate level by level and push nodes apart horizontally if too close
-        const allLevels = [...new Set(nodes.map(n => n.y))].sort((a, b) => a - b); // Get unique Y levels
+        const allLevels = [...new Set(nodes.map(n => n.y))].sort((a, b) => a - b);
         allLevels.forEach(yLevel => {
             let levelNodes = nodes.filter(n => n.y === yLevel);
-            levelNodes.sort((a, b) => a.x - b.x); // Sort nodes on this level by X position
+            levelNodes.sort((a, b) => a.x - b.x);
             for (let i = 0; i < levelNodes.length - 1; i++) {
-                let nodeA = levelNodes[i];
-                let nodeB = levelNodes[i + 1];
-                const dx = nodeB.x - nodeA.x;
-                const minDistance = NODE_RADIUS * 2.5; // Minimum desired horizontal distance
-
+                let nodeA = levelNodes[i]; let nodeB = levelNodes[i + 1];
+                const dx = nodeB.x - nodeA.x; const minDistance = NODE_RADIUS * 2.5;
                 if (dx < minDistance) {
-                    // Nodes are too close, push them apart
-                    const overlap = minDistance - dx;
-                    const adjust = overlap / 2 + 1; // Amount to move each node (+1 buffer)
-                    nodeA.x = Math.max(NODE_RADIUS + 1, nodeA.x - adjust); // Ensure stays within bounds
+                    const overlap = minDistance - dx; const adjust = overlap / 2 + 1;
+                    nodeA.x = Math.max(NODE_RADIUS + 1, nodeA.x - adjust);
                     nodeB.x = Math.min(canvas.width - NODE_RADIUS - 1, nodeB.x + adjust);
                 }
             }
-             // After adjusting nodeA and nodeB, we might need to re-check nodeB against nodeC (i+2)
-             // For simplicity, one pass might be sufficient visually. Can re-run if needed.
         });
-
-        updateConnectionStatus();
-        updateDescriptionContent();
-        drawNetwork();
+        updateConnectionStatus(); updateDescriptionContent(); drawNetwork();
     }
 
-
-    // --- Revised generateHybrid ---
     function generateHybrid() {
-        selectedTopology = 'Hybrid (Star-Bus-Star)';
-        if (nodeCount < 5) {
-            alert("Hybrid (Star-Bus-Star) example requires at least 5 nodes.");
-            resetVisualization(); return;
-        }
-        generateNodes(nodeCount); connections = [];
-        let nodeIdx = 0;
-
-        // --- Define Structure Parameters ---
+        selectedTopology = 'التوبولوجيا المختلطة (Star-Bus-Star)';
+        if (nodeCount < 5) { alert("التوبولوجيا المختلطة (Star-Bus-Star) تتطلب 5 عقد على الأقل."); resetVisualization(); return; }
+        generateNodes(nodeCount); connections = []; let nodeIdx = 0;
         const numStars = 2;
-        // Calculate nodes per star, ensuring at least 1 central + 1 peripheral
         let nodesPerStar = Math.max(2, Math.floor((nodeCount - 1) / numStars));
-        // Calculate remaining nodes for the dedicated bus line
         let numDedicatedBusNodes = nodeCount - (nodesPerStar * numStars);
-
-        // Adjust if initial calculation is off (e.g., nodeCount=5)
         if (numDedicatedBusNodes < 0) {
-            nodesPerStar = Math.max(2, Math.floor(nodeCount / numStars)); // Re-evaluate nodes per star
-            numDedicatedBusNodes = Math.max(0, nodeCount - (nodesPerStar * numStars)); // Recalculate bus nodes
+            nodesPerStar = Math.max(2, Math.floor(nodeCount / numStars));
+            numDedicatedBusNodes = Math.max(0, nodeCount - (nodesPerStar * numStars));
         }
-        // Final check to ensure star has at least 2 nodes if possible
         if (nodeCount - numDedicatedBusNodes < numStars * 2) {
-            // Not enough nodes for 2 stars + bus, reduce bus nodes if possible
             numDedicatedBusNodes = Math.max(0, nodeCount - (numStars * 2));
             nodesPerStar = 2;
         }
-
-
-        const starCenters = [];
-        const starAreaWidth = canvas.width / (numStars + 1); // Space for stars + bus
-
-        // --- Create Stars ---
+        const starCenters = []; const starAreaWidth = canvas.width / (numStars + 1);
         for (let s = 0; s < numStars; s++) {
-            const starCenterX = starAreaWidth * (s + 1); // Center X for this star's area
-            const starCenterY = canvas.height * 0.3; // Place stars higher
-            const starRadius = Math.min(starAreaWidth * 0.3, canvas.height * 0.2);
-
-            // Assign Central Node
             if (nodeIdx >= nodeCount) break;
-            const centralNode = nodes[nodeIdx++];
-            centralNode.x = starCenterX; centralNode.y = starCenterY; centralNode.isCentral = true;
-            starCenters.push(centralNode);
-
-            // Assign Peripheral Nodes
+            const starCenterX = starAreaWidth * (s + 1); const starCenterY = canvas.height * 0.3;
+            const starRadius = Math.min(starAreaWidth * 0.3, canvas.height * 0.2);
+            const centralNode = nodes[nodeIdx++]; centralNode.x = starCenterX; centralNode.y = starCenterY; centralNode.isCentral = true; starCenters.push(centralNode);
             const numPeripherals = Math.min(nodesPerStar - 1, nodeCount - nodeIdx);
             for (let i = 0; i < numPeripherals; i++) {
                 if (nodeIdx >= nodeCount) break;
-                const peripheralNode = nodes[nodeIdx++];
-                const angle = (Math.PI * 2 * i) / numPeripherals;
-                peripheralNode.x = starCenterX + starRadius * Math.cos(angle);
-                peripheralNode.y = starCenterY + starRadius * Math.sin(angle);
+                const peripheralNode = nodes[nodeIdx++]; const angle = (Math.PI * 2 * i) / numPeripherals;
+                peripheralNode.x = starCenterX + starRadius * Math.cos(angle); peripheralNode.y = starCenterY + starRadius * Math.sin(angle);
                 addConnection(centralNode, peripheralNode);
             }
         }
-
-        // --- Create Bus ---
-        const busY = canvas.height * 0.7; // Place bus line lower
-        const dedicatedBusNodes = []; // Nodes physically on the bus line
-        const allBusParticipants = [...starCenters]; // Start participants list with star centers
-
-        // Assign Dedicated Bus Nodes (if any)
+        const busY = canvas.height * 0.7; const dedicatedBusNodes = []; const allBusParticipants = [...starCenters];
         const actualDedicatedBusNodes = Math.min(numDedicatedBusNodes, nodeCount - nodeIdx);
         for (let i = 0; i < actualDedicatedBusNodes; i++) {
              if (nodeIdx >= nodeCount) break;
-             const busNode = nodes[nodeIdx++];
-             dedicatedBusNodes.push(busNode);
-             allBusParticipants.push(busNode);
+             const busNode = nodes[nodeIdx++]; dedicatedBusNodes.push(busNode); allBusParticipants.push(busNode);
         }
-
-        // Position only the dedicated bus nodes evenly on the bus line
-        const busLineStartX = canvas.width * 0.15;
-        const busLineEndX = canvas.width * 0.85;
-        const busLineWidth = busLineEndX - busLineStartX;
-        const busSpacing = dedicatedBusNodes.length > 0 ? busLineWidth / (dedicatedBusNodes.length + 1) : 0;
-
-        dedicatedBusNodes.forEach((node, i) => {
-             node.x = busLineStartX + busSpacing * (i + 1);
-             node.y = busY;
-        });
-
-        // Connect Bus Participants: Sort all participants (centers + dedicated) by X position
+        const busLineStartX = canvas.width * 0.15; const busLineEndX = canvas.width * 0.85;
+        const busLineWidth = busLineEndX - busLineStartX; const busSpacing = dedicatedBusNodes.length > 0 ? busLineWidth / (dedicatedBusNodes.length + 1) : 0;
+        dedicatedBusNodes.forEach((node, i) => { node.x = busLineStartX + busSpacing * (i + 1); node.y = busY; });
         allBusParticipants.sort((a, b) => a.x - b.x);
-
-        // Connect sequentially based on sorted X position
         for(let i = 0; i < allBusParticipants.length - 1; i++) {
-            if (allBusParticipants[i] && allBusParticipants[i+1]) {
-               addConnection(allBusParticipants[i], allBusParticipants[i+1]);
-            }
+            if (allBusParticipants[i] && allBusParticipants[i+1]) addConnection(allBusParticipants[i], allBusParticipants[i+1]);
         }
-
-        updateConnectionStatus();
-        updateDescriptionContent();
-        drawNetwork();
+        updateConnectionStatus(); updateDescriptionContent(); drawNetwork();
     }
-
 
     // --- Failure Simulation & Connection Updates ---
     function updateConnectionStatus() {
@@ -358,18 +274,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Description Update ---
     function updateDescriptionContent(affectedNode = null) {
-        let html = `<h3>${selectedTopology || 'No Topology Selected'}</h3>`; let failureInfo = '';
+        let html = `<h3>${selectedTopology || 'لم يتم اختيار توبولوجيا'}</h3>`;
+        let failureInfo = '';
+
         switch (selectedTopology) {
-            case 'Bus': html += `<p>🚌 Nodes connect sequentially to a single shared backbone cable... <strong>Disadvantage:</strong> Backbone failure affects multiple nodes...</p>`; if (affectedNode) failureInfo = `Node ${affectedNode.id} failed...`; break;
-            case 'Star': html += `<p>⭐ All nodes connect to a central hub/switch... <strong>Disadvantage:</strong> Central hub is a single point of failure.</p>`; if (affectedNode) failureInfo = `Node ${affectedNode.id} failure simulated. ${affectedNode.isCentral ? '<strong>Critical Failure:</strong> Central hub down...' : 'Peripheral Node isolated...'}`; break;
-            case 'Ring': html += `<p>🔄 Nodes connect in a closed loop... <strong>Disadvantage:</strong> A single failure can break the ring...</p>`; if (affectedNode) failureInfo = `Node ${affectedNode.id} failed. Connections broken, disrupting ring path...`; break;
-            case 'Mesh (Full)': html += `<p>🕸️ Every node connects directly to every other node... Highly redundant... <strong>Disadvantage:</strong> Very expensive and complex...</p>`; if (affectedNode) failureInfo = `Node ${affectedNode.id} failed. Only this node offline...`; break;
-            case 'Tree': html += `<p>🌳 Hierarchical structure combining star/bus... Scalable... <strong>Disadvantage:</strong> Failure of a higher-level node can isolate branches...</p>`; if (affectedNode) failureInfo = `Node ${affectedNode.id} failed. This node and sub-trees below it are isolated...`; break;
-            case 'Hybrid (Star-Bus-Star)': html += `<p>🔗 Combines multiple topologies... Flexibility... <strong>Disadvantage:</strong> Can be complex...</p>`; if (affectedNode) failureInfo = `Node ${affectedNode.id} failed. Impact depends on role: peripheral, hub, or bus node...`; break;
-            default: html = `<p>Select a topology type and number of nodes... Click the corresponding button... Click on a node to simulate failure...</p>`; break;
+            case 'التوبولوجيا الخطية (Bus)':
+                html += `<p>🚌 تتصل جميع الأجهزة في الشبكة بكابل مركزي واحد (الناقل أو العمود الفقري). تُستخدم النهايات (Terminators) في طرفي الكابل لمنع انعكاس الإشارة.</p>
+                         <p><strong>المميزات:</strong> تكلفة منخفضة، سهولة التركيب.</p>
+                         <p><strong>العيوب:</strong> نقطة فشل واحدة (الكابل المركزي)، احتمالية تصادم البيانات، صعوبة تحديد الأعطال، قابلية توسع محدودة.</p>`;
+                if (affectedNode) failureInfo = `العقدة ${affectedNode.id} معطلة. إذا كان الكابل الرئيسي هو المتأثر، قد تتعطل الشبكة بأكملها.`;
+                break;
+            case 'التوبولوجيا النجمية (Star)':
+                html += `<p>⭐ تتصل كل عقدة بشكل مستقل بجهاز مركزي (موزع Hub قديمًا أو مبدل Switch حديثًا). البيانات تمر عبر الجهاز المركزي.</p>
+                         <p><strong>المميزات:</strong> موثوقية عالية (فشل عقدة لا يؤثر على الباقي عادةً)، سهولة الصيانة والإدارة، أداء جيد مع المبدلات، قابلية توسع جيدة.</p>
+                         <p><strong>العيوب:</strong> الاعتماد الكامل على الجهاز المركزي (نقطة فشل واحدة)، تكاليف أعلى من الخطية بسبب الكابلات والجهاز المركزي.</p>`;
+                if (affectedNode) failureInfo = `العقدة ${affectedNode.id} معطلة. ${affectedNode.isCentral ? '<strong>فشل حرج:</strong> الجهاز المركزي معطل، الشبكة بأكملها تتوقف.' : 'عقدة طرفية معزولة، باقي الشبكة تعمل.'}`;
+                break;
+            case 'التوبولوجيا الدائرية (Ring)':
+                html += `<p>🔄 يتم توصيل كل جهاز بجهازين آخرين، مكونة حلقة مغلقة. تنتقل البيانات عادة في اتجاه واحد. تستخدم آلية "تمرير التوكن" (Token Passing) للتحكم في الوصول ومنع التصادمات، حيث يمتلك الجهاز الذي يحمل التوكن حق الإرسال.</p>
+                         <p><strong>المميزات:</strong> عدم حدوث تصادمات (بسبب تمرير التوكن)، أداء مستقر تحت الحمل الثابت.</p>
+                         <p><strong>العيوب:</strong> حساسية عالية للأعطال (في الحلقة الأحادية، فشل كابل أو جهاز يوقف الشبكة)، صعوبة تشخيص الأخطاء.</p>`;
+                if (affectedNode) failureInfo = `العقدة ${affectedNode.id} معطلة. الاتصالات عبر هذه العقدة معطلة، مما قد يكسر الحلقة ويتسبب في توقف الشبكة إذا كانت حلقة أحادية.`;
+                break;
+            case 'التوبولوجيا الشبكية (Mesh - Full)':
+                html += `<p>🕸️ في التوبولوجيا الشبكية الكاملة، تكون كل عقدة متصلة مباشرة بجميع العقد الأخرى. توفر مسارات متعددة للبيانات.</p>
+                         <p><strong>المميزات:</strong> أعلى درجات الموثوقية وتحمل الأخطاء (مسارات بديلة)، توزيع جيد للحمل.</p>
+                         <p><strong>العيوب:</strong> تكاليف مرتفعة جداً (عدد كبير من الكابلات والواجهات)، تعقيد كبير في الإعداد والصيانة.</p>`;
+                if (affectedNode) failureInfo = `العقدة ${affectedNode.id} معطلة. فقط هذه العقدة واتصالاتها المباشرة تتأثر. الشبكة تستمر بالعمل عبر المسارات الأخرى.`;
+                break;
+            case 'التوبولوجيا الشجرية (Tree)':
+                html += `<p>🌳 بنية هرمية، حيث توجد عقدة رئيسية (Root Node) في القمة، وتتفرع منها عقد فرعية (Child Nodes). يمكن أن تجمع بين خصائص النجمية والخطية (الفروع كنجمية، والاتصال بينها كخطية).</p>
+                         <p><strong>المميزات:</strong> قابلية توسع عالية جداً، هيكل منظم يسهل تحديد المشاكل، عزل جزئي للأعطال (فشل فرع لا يؤثر على الباقي، ما لم يكن الجذر).</p>
+                         <p><strong>العيوب:</strong> اعتماد كبير على العقدة الرئيسية (فشلها قد يوقف الشبكة)، تعقيد في التصميم، تكاليف أعلى.</p>`;
+                if (affectedNode) failureInfo = `العقدة ${affectedNode.id} معطلة. ${affectedNode.isCentral && nodes.indexOf(affectedNode) === 0 ? '<strong>فشل حرج:</strong> العقدة الجذرية معطلة، قد تنهار الشبكة بالكامل.' : 'هذه العقدة وأي فروع سفلية تابعة لها قد تكون معزولة.'}`;
+                break;
+            case 'التوبولوجيا المختلطة (Star-Bus-Star)':
+                html += `<p>🔗 تنتج عن دمج نوعين أو أكثر من التوبولوجيات الأساسية لتحقيق توازن بين الأداء، التكلفة، والموثوقية. هذا المثال يوضح دمج توبولوجيات نجمية متصلة عبر ناقل مركزي (Bus).</p>
+                         <p><strong>المميزات:</strong> مرونة عالية في التصميم، تحسين الأداء العام، سهولة عزل الأعطال ضمن وحدات فرعية.</p>
+                         <p><strong>العيوب:</strong> تصميم معقد يتطلب خبرة، تكاليف مرتفعة نسبيًا، صعوبة في الإدارة بدون أدوات متقدمة.</p>`;
+                if (affectedNode) failureInfo = `العقدة ${affectedNode.id} معطلة. يعتمد التأثير على دور العقدة: هل هي طرفية في نجمة، أم مركز نجمة، أم جزء من الناقل المركزي.`;
+                break;
+            default:
+                html = `<h2>الوصف والمعلومات</h2>
+                        <p>مرحباً بك! هذا الدليل يقدم نظرة شاملة على توبولوجيات الشبكات المختلفة. اختر نوع التوبولوجيا وعدد العقد، ثم انقر على الزر المقابل لعرضها. يمكنك النقر على أي عقدة في الرسم لمحاكاة فشلها ومعرفة تأثير ذلك على الشبكة. عندما تكون مستعداً، انقر على "ابدأ الاختبار" لاختبار معلوماتك.</p>`;
+                break;
         }
-        if (failureInfo) html += `<p style="margin-top: 10px;"><em><strong>Failure Simulation:</strong> ${failureInfo}</em></p>`;
-        else if (selectedTopology) html += `<p style="margin-top: 10px;"><em>Click on a node to simulate its failure.</em></p>`;
+        if (failureInfo) {
+            html += `<p style="margin-top: 10px; padding: 8px; background-color: #ffebee; border: 1px solid #e57373; border-radius: 4px; color: #c62828;"><em><strong>محاكاة الفشل:</strong> ${failureInfo}</em></p>`;
+        } else if (selectedTopology && selectedTopology !== 'لم يتم اختيار توبولوجيا') {
+            html += `<p style="margin-top: 10px;"><em>انقر على أي عقدة لمحاكاة فشلها.</em></p>`;
+        }
         descriptionDiv.innerHTML = html;
     }
 
@@ -378,12 +332,12 @@ document.addEventListener('DOMContentLoaded', () => {
         nodes = []; connections = []; failedNodes.clear(); selectedTopology = null; clearCanvas();
         nodeCountInput.value = 5; nodeCount = 5; updateDescriptionContent();
         ctx.fillStyle = '#7f8c8d'; ctx.font = '16px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText("Select a topology or take the quiz", canvas.width / 2, canvas.height / 2);
+        ctx.fillText("مرحباً بك! اختر توبولوجيا لعرضها أو ابدأ الاختبار.", canvas.width / 2, canvas.height / 2);
     }
 
     // --- Quiz Functionality ---
-    function showQuiz() { resetQuizState(); quizContainer.classList.remove('hidden'); quizButton.textContent = 'Hide Quiz 📝'; quizButton.setAttribute('aria-expanded', 'true'); quizContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
-    function hideQuiz() { quizContainer.classList.add('hidden'); quizButton.textContent = 'Take Quiz 📝'; quizButton.setAttribute('aria-expanded', 'false'); }
+    function showQuiz() { resetQuizState(); quizContainer.classList.remove('hidden'); quizButton.textContent = 'إخفاء الاختبار 📝'; quizButton.setAttribute('aria-expanded', 'true'); quizContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    function hideQuiz() { quizContainer.classList.add('hidden'); quizButton.textContent = 'ابدأ الاختبار 📝'; quizButton.setAttribute('aria-expanded', 'false'); }
     function toggleQuiz() { if (quizContainer.classList.contains('hidden')) showQuiz(); else hideQuiz(); }
     function resetQuizState() {
         quizForm.reset(); quizResultsDiv.innerHTML = ''; quizResultsDiv.className = 'quiz-results'; submitQuizButton.disabled = false;
@@ -407,10 +361,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 else { if (selectedLabel) selectedLabel.classList.add('incorrect-choice'); if (correctLabel) correctLabel.classList.add('reveal-correct'); }
             } else { if (correctLabel) correctLabel.classList.add('reveal-correct'); }
         });
-        quizResultsDiv.innerHTML = `Your Score: ${score} out of ${totalQuestions}`;
-        if (score === totalQuestions) { quizResultsDiv.className = 'quiz-results correct'; quizResultsDiv.innerHTML += ' - Excellent! 🎉'; }
-        else if (score >= Math.ceil(totalQuestions * 0.6)) { quizResultsDiv.className = 'quiz-results correct'; quizResultsDiv.innerHTML += ' - Good job!'; }
-        else { quizResultsDiv.className = 'quiz-results incorrect'; quizResultsDiv.innerHTML += ' - Keep reviewing!'; }
+        quizResultsDiv.innerHTML = `نتيجتك: ${score} من ${totalQuestions}`;
+        if (score === totalQuestions) { quizResultsDiv.className = 'quiz-results correct'; quizResultsDiv.innerHTML += ' - ممتاز! 🎉'; }
+        else if (score >= Math.ceil(totalQuestions * 0.7)) { quizResultsDiv.className = 'quiz-results correct'; quizResultsDiv.innerHTML += ' - عمل جيد!'; }
+        else if (score >= Math.ceil(totalQuestions * 0.5)) { quizResultsDiv.className = 'quiz-results so-so'; quizResultsDiv.innerHTML += ' - لا بأس، حاول مرة أخرى للمراجعة!'; }
+        else { quizResultsDiv.className = 'quiz-results incorrect'; quizResultsDiv.innerHTML += ' - تحتاج إلى مراجعة أكثر!'; }
         submitQuizButton.disabled = true; quizResultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -419,7 +374,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let count = parseInt(nodeCountInput.value, 10); count = Math.max(3, Math.min(15, count));
         nodeCountInput.value = count; nodeCount = count;
         if (selectedTopology) {
-            const generatorMap = { 'Bus': generateBus, 'Star': generateStar, 'Ring': generateRing, 'Mesh (Full)': generateMesh, 'Tree': generateTree, 'Hybrid (Star-Bus-Star)': generateHybrid };
+            const generatorMap = {
+                'التوبولوجيا الخطية (Bus)': generateBus,
+                'التوبولوجيا النجمية (Star)': generateStar,
+                'التوبولوجيا الدائرية (Ring)': generateRing,
+                'التوبولوجيا الشبكية (Mesh - Full)': generateMesh,
+                'التوبولوجيا الشجرية (Tree)': generateTree,
+                'التوبولوجيا المختلطة (Star-Bus-Star)': generateHybrid
+            };
             const regenerateFn = generatorMap[selectedTopology]; if (regenerateFn) regenerateFn();
         }
     });
@@ -428,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.keys(topologyButtons).forEach(key => {
         const button = topologyButtons[key]; const generatorFn = generatorMap[key];
         if (button && typeof generatorFn === 'function') button.addEventListener('click', generatorFn);
-        else console.error(`Failed to attach listener for key: '${key}'.`);
+        else console.error(`فشل في ربط المستمع للمفتاح: '${key}'.`);
     });
 
     canvas.addEventListener('click', handleCanvasClick);
@@ -438,5 +400,5 @@ document.addEventListener('DOMContentLoaded', () => {
     closeQuizButton.addEventListener('click', hideQuiz);
 
     // --- Initial Setup ---
-    resetVisualization(); // Initialize on load
+    resetVisualization();
 });

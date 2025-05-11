@@ -1,139 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Network Topology Visualizer & Quiz</title>
+    <title>دليل شامل لتوبولوجيا الشبكات: متخيل واختبار</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Network Topology Visualizer & Quiz</h1>
+        <h1>دليل شامل لتوبولوجيا الشبكات: متخيل واختبار</h1>
 
         <div id="controls">
-            <h2>Controls</h2>
+            <h2>أدوات التحكم</h2>
             <div class="control-group">
-                <label for="nodeCount">Number of Nodes (3-15):</label>
+                <label for="nodeCount">عدد العقد (3-15):</label>
                 <input type="number" id="nodeCount" name="nodeCount" min="3" max="15" value="5">
             </div>
             <div class="control-group topology-buttons">
-                <button id="busButton" title="Bus Topology 🚌">Bus</button>
-                <button id="starButton" title="Star Topology ⭐">Star</button>
-                <button id="ringButton" title="Ring Topology 🔄">Ring</button>
-                <button id="meshButton" title="Mesh Topology 🕸️">Mesh (Full)</button>
-                <button id="treeButton" title="Tree Topology 🌳">Tree</button>
-                <button id="hybridButton" title="Hybrid Topology 🔗">Hybrid</button>
+                <button id="busButton" title="التوبولوجيا الخطية 🚌">خطية</button>
+                <button id="starButton" title="التوبولوجيا النجمية ⭐">نجمية</button>
+                <button id="ringButton" title="التوبولوجيا الدائرية 🔄">دائرية</button>
+                <button id="meshButton" title="التوبولوجيا الشبكية 🕸️">شبكية (كاملة)</button>
+                <button id="treeButton" title="التوبولوجيا الشجرية 🌳">شجرية</button>
+                <button id="hybridButton" title="التوبولوجيا المختلطة 🔗">مختلطة</button>
             </div>
-             <div class="control-group">
-                 <button id="resetButton">Reset Visualizer</button>
-                 <button id="quizButton">Take Quiz 📝</button> <!-- Quiz Button -->
+            <div class="control-group action-buttons"> <!-- Add this wrapper -->
+                 <button id="resetButton">إعادة تعيين المتخيل</button>
+                 <button id="quizButton">ابدأ الاختبار 📝</button>
              </div>
         </div>
 
         <div id="visualization">
             <canvas id="networkCanvas" width="750" height="450">
-                Your browser does not support the HTML5 canvas tag.
+                متصفحك لا يدعم وسم canvas في HTML5.
             </canvas>
             <div id="legend">
-                <span class="legend-item"><span class="legend-color node-ok"></span> Node (OK)</span>
-                <span class="legend-item"><span class="legend-color node-failed"></span> Node (Failed)</span>
-                <span class="legend-item"><span class="legend-color connection-ok"></span> Connection (OK)</span>
-                 <span class="legend-item"><span class="legend-color connection-failed"></span> Connection (Down)</span>
+                <span class="legend-item"><span class="legend-color node-ok"></span> عقدة (تعمل)</span>
+                <span class="legend-item"><span class="legend-color node-failed"></span> عقدة (معطلة)</span>
+                <span class="legend-item"><span class="legend-color node-central"></span> عقدة (مركزية/جذر)</span>
+                <span class="legend-item"><span class="legend-color connection-ok"></span> اتصال (يعمل)</span>
+                 <span class="legend-item"><span class="legend-color connection-failed"></span> اتصال (معطل)</span>
             </div>
         </div>
 
 
         <div id="description">
-            <h2>Description</h2>
-            <p>Select a topology and number of nodes, then click the corresponding button. Click on a node in the visualization to simulate a failure. Click "Take Quiz" to test your knowledge.</p>
+            <h2>الوصف والمعلومات</h2>
+            <p>مرحباً بك! هذا الدليل يقدم نظرة شاملة على توبولوجيات الشبكات المختلفة. اختر نوع التوبولوجيا وعدد العقد، ثم انقر على الزر المقابل لعرضها. يمكنك النقر على أي عقدة في الرسم لمحاكاة فشلها ومعرفة تأثير ذلك على الشبكة. عندما تكون مستعداً، انقر على "ابدأ الاختبار" لاختبار معلوماتك.</p>
         </div>
 
         <!-- Quiz Section (Initially Hidden) -->
         <div id="quizContainer" class="hidden">
-            <h2>Network Topology Quiz</h2>
+            <h2>اختبار توبولوجيا الشبكات</h2>
             <form id="quizForm">
                 <div class="quiz-question">
-                    <p><strong>1. What refers to the actual layout of cables and devices?</strong></p>
+                    <p><strong>1. ماذا يُقصد بالتعبير الذي يشير إلى التخطيط الفعلي للكابلات والأجهزة في الشبكة؟</strong></p>
                     <div class="quiz-options">
-                        <label><input type="radio" name="q1" value="a"> a) Logical Topology</label><br>
-                        <label><input type="radio" name="q1" value="b"> b) Physical Topology</label><br>
-                        <label><input type="radio" name="q1" value="c"> c) Network Protocol</label><br>
+                        <label><input type="radio" name="q1" value="a"> أ) التوبولوجيا المنطقية</label><br>
+                        <label><input type="radio" name="q1" value="b"> ب) التوبولوجيا المادية</label><br>
+                        <label><input type="radio" name="q1" value="c"> ج) بروتوكول الشبكة</label><br>
                     </div>
                 </div>
 
                 <div class="quiz-question">
-                    <p><strong>2. Which topology uses a single central backbone cable? 🚌</strong></p>
+                    <p><strong>2. أي توبولوجيا تستخدم كابلًا فقريًا مركزيًا واحدًا؟ 🚌</strong></p>
                     <div class="quiz-options">
-                        <label><input type="radio" name="q2" value="a"> a) Star</label><br>
-                        <label><input type="radio" name="q2" value="b"> b) Ring</label><br>
-                        <label><input type="radio" name="q2" value="c"> c) Bus</label><br>
+                        <label><input type="radio" name="q2" value="a"> أ) النجمية</label><br>
+                        <label><input type="radio" name="q2" value="b"> ب) الدائرية</label><br>
+                        <label><input type="radio" name="q2" value="c"> ج) الخطية</label><br>
                     </div>
                 </div>
 
                 <div class="quiz-question">
-                    <p><strong>3. What is the main disadvantage of a Star topology? ⭐</strong></p>
+                    <p><strong>3. ما هو العيب الرئيسي للتوبولوجيا النجمية؟ ⭐</strong></p>
                     <div class="quiz-options">
-                        <label><input type="radio" name="q3" value="a"> a) Difficult to add new devices</label><br>
-                        <label><input type="radio" name="q3" value="b"> b) Single point of failure (central hub/switch)</label><br>
-                        <label><input type="radio" name="q3" value="c"> c) Slow performance</label><br>
+                        <label><input type="radio" name="q3" value="a"> أ) صعوبة إضافة أجهزة جديدة</label><br>
+                        <label><input type="radio" name="q3" value="b"> ب) نقطة فشل واحدة (الموزع/المبدل المركزي)</label><br>
+                        <label><input type="radio" name="q3" value="c"> ج) أداء بطيء</label><br>
                     </div>
                 </div>
 
                 <div class="quiz-question">
-                    <p><strong>4. Which topology often uses a token-passing protocol? 🔄</strong></p>
+                    <p><strong>4. أي توبولوجيا تستخدم غالبًا بروتوكول تمرير التوكن (token-passing)؟ 🔄</strong></p>
                     <div class="quiz-options">
-                        <label><input type="radio" name="q4" value="a"> a) Mesh</label><br>
-                        <label><input type="radio" name="q4" value="b"> b) Ring</label><br>
-                        <label><input type="radio" name="q4" value="c"> c) Bus</label><br>
+                        <label><input type="radio" name="q4" value="a"> أ) الشبكية</label><br>
+                        <label><input type="radio" name="q4" value="b"> ب) الدائرية</label><br>
+                        <label><input type="radio" name="q4" value="c"> ج) الخطية</label><br>
                     </div>
                 </div>
 
                  <div class="quiz-question">
-                    <p><strong>5. Which topology offers the highest fault tolerance and redundancy? 🕸️</strong></p>
+                    <p><strong>5. أي توبولوجيا تقدم أعلى درجات تحمل الأخطاء والتكرارية؟ 🕸️</strong></p>
                     <div class="quiz-options">
-                        <label><input type="radio" name="q5" value="a"> a) Tree</label><br>
-                        <label><input type="radio" name="q5" value="b"> b) Star</label><br>
-                        <label><input type="radio" name="q5" value="c"> c) Mesh (Full)</label><br>
+                        <label><input type="radio" name="q5" value="a"> أ) الشجرية</label><br>
+                        <label><input type="radio" name="q5" value="b"> ب) النجمية</label><br>
+                        <label><input type="radio" name="q5" value="c"> ج) الشبكية (الكاملة)</label><br>
                     </div>
                 </div>
 
                  <div class="quiz-question">
-                    <p><strong>6. A Tree topology combines elements of which two other topologies? 🌳</strong></p>
+                    <p><strong>6. التوبولوجيا الشجرية تجمع عناصر من أي توبولوجيتين أخريين بشكل شائع؟ 🌳</strong></p>
                     <div class="quiz-options">
-                        <label><input type="radio" name="q6" value="a"> a) Ring and Mesh</label><br>
-                        <label><input type="radio" name="q6" value="b"> b) Star and Bus</label><br>
-                        <label><input type="radio" name="q6" value="c"> c) Bus and Ring</label><br>
+                        <label><input type="radio" name="q6" value="a"> أ) الدائرية والشبكية</label><br>
+                        <label><input type="radio" name="q6" value="b"> ب) النجمية والخطية</label><br>
+                        <label><input type="radio" name="q6" value="c"> ج) الخطية والدائرية</label><br>
                     </div>
                 </div>
 
                  <div class="quiz-question">
-                    <p><strong>7. A network combining Star and Bus topologies is an example of which type? 🔗</strong></p>
+                    <p><strong>7. شبكة تجمع بين التوبولوجيا النجمية والخطية هي مثال على أي نوع؟ 🔗</strong></p>
                     <div class="quiz-options">
-                        <label><input type="radio" name="q7" value="a"> a) Hybrid</label><br>
-                        <label><input type="radio" name="q7" value="b"> b) Mesh</label><br>
-                        <label><input type="radio" name="q7" value="c"> c) Complex Star</label><br>
+                        <label><input type="radio" name="q7" value="a"> أ) المختلطة</label><br>
+                        <label><input type="radio" name="q7" value="b"> ب) الشبكية</label><br>
+                        <label><input type="radio" name="q7" value="c"> ج) النجمية المعقدة</label><br>
                     </div>
                 </div>
 
                  <div class="quiz-question">
-                    <p><strong>8. What technology allows managing logical topology separately from physical layout?</strong></p>
+                    <p><strong>8. ما هي التقنية التي تسمح بإدارة التوبولوجيا المنطقية بشكل منفصل عن التخطيط المادي؟</strong></p>
                     <div class="quiz-options">
-                        <label><input type="radio" name="q8" value="a"> a) 5G</label><br>
-                        <label><input type="radio" name="q8" value="b"> b) IoT</label><br>
-                        <label><input type="radio" name="q8" value="c"> c) SDN (Software-Defined Networking)</label><br>
+                        <label><input type="radio" name="q8" value="a"> أ) الجيل الخامس (5G)</label><br>
+                        <label><input type="radio" name="q8" value="b"> ب) إنترنت الأشياء (IoT)</label><br>
+                        <label><input type="radio" name="q8" value="c"> ج) الشبكات المعرفة بالبرمجيات (SDN)</label><br>
                     </div>
                 </div>
 
-                <button type="button" id="submitQuizButton">Submit Quiz</button>
-                <div id="quizResults" class="quiz-results"></div> <!-- Results will appear here -->
+                <div class="quiz-question">
+                    <p><strong>9. ما هو الغرض الأساسي من آلية "تمرير التوكن" (Token Passing) في التوبولوجيا الدائرية؟</strong></p>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q9" value="a"> أ) زيادة سرعة نقل البيانات</label><br>
+                        <label><input type="radio" name="q9" value="b"> ب) منع تصادم البيانات عن طريق التحكم في الوصول</label><br>
+                        <label><input type="radio" name="q9" value="c"> ج) تشفير حزم البيانات</label><br>
+                    </div>
+                </div>
 
+
+                <button type="button" id="submitQuizButton">إرسال الإجابات</button>
+                <div id="quizResults" class="quiz-results"></div>
             </form>
-            <button type="button" id="closeQuizButton" class="close-quiz-btn">Close Quiz</button>
+            <button type="button" id="closeQuizButton" class="close-quiz-btn">إغلاق الاختبار</button>
         </div>
         <!-- End Quiz Section -->
 
     </div>
-
+    <footer>
+        <p style="text-align: center; margin-top: 20px; font-size: 0.9em; color: #777;">
+            مستوحى من العرض التقديمي لطلاب الشبكات.
+        </p>
+    </footer>
     <script src="script.js"></script>
 </body>
 </html>
